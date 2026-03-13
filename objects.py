@@ -2,6 +2,7 @@ import itertools
 import random
 from functools import total_ordering
 from abc import ABC, abstractmethod
+from collections import Counter
 
 # Card object, total ordering used for sort() function mainly.
 @total_ordering
@@ -28,24 +29,42 @@ class Card:
         return f"({self._rank} {self._suit})"
 
     def __repr__(self):
-        return f"Card(Rank({self._rank}), Suit({self._suit}))"
+        return f"Card(Rank({self._rank}) Suit({self._suit}))"
 
     def __hash__(self):
         return hash((self._rank, self._suit))
+
+    def __getitem__(self, index):
+        if index == 0:
+            return self._rank
+        elif index == 1:
+            return self._suit
 
 #Deck object that contains all 52 cards with different methods
 class CardList(ABC):
     def __init__(self):
         self._card_list = []
 
+        self.rank_counts = Counter()
+        self.suit_counts = Counter()
     #printing backwards for better efficiency in pop()
     @abstractmethod
     def printCards(self):
         pass
 
+    def get_card_list(self):
+        return self._card_list
+
+    def get_rank_counts_list(self):
+        return self.rank_counts
+
+    def get_suit_counts_list(self):
+        return self.suit_counts
+
 class Deck(CardList):
     _ranks = [x for x in Card.Values]
     _suits = ['♠','♥','♣','♦']
+
 
     def __init__(self):
         super().__init__()
@@ -69,12 +88,13 @@ class Deck(CardList):
     def burn(self):
         self._card_list.pop()
 
-
 #Hand object that calculates best hand when combined with board
 class Hand(CardList):
-    def __init__(self, player):
+    def __init__(self, player, deck, board):
         super().__init__()
         self.player = player
+        self.deck = deck
+        self.board = board
 
     def printCards(self):
         print(f"==={self.player} HAND===")
@@ -82,12 +102,44 @@ class Hand(CardList):
             print(f"{str(card):<7}", end='')
         print()
 
-    def take_card(self, deck):
-        card_to_take = deck.take_card()
-        self._card_list.append(card_to_take)
-        return card_to_take
+    def take_card(self):
+        card =  self.deck.take_card()
+        self._card_list.append(card)
 
+        self.rank_counts[card[0]] += 1
+        self.suit_counts[card[0]] += 1
 
+    def all_cards(self):
+            return self.get_card_list() + self.board.get_card_list()
+
+class Board(CardList):
+    def __init__(self, deck):
+        super().__init__()
+        self.deck = deck
+
+    def printCards(self):
+        print(f"=====BOARD=====")
+        for card in self._card_list:
+            print(f"{str(card):<7}", end='')
+        print()
+
+#flop river_turn
+    def flop(self):
+        self.deck.burn()
+        for i in range(3):
+            card = self.deck.take_card()
+            self._card_list.append(card)
+
+            self.rank_counts[card[0]] += 1
+            self.suit_counts[card[0]] += 1
+
+    def river_and_turn(self):
+        self.deck.burn()
+        card = self.deck.take_card()
+        self._card_list.append(card)
+
+        self.rank_counts[card[0]] += 1
+        self.suit_counts[card[0]] += 1
 
 
 
