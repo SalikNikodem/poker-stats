@@ -40,14 +40,16 @@ class Card:
         elif index == 1:
             return self._suit
 
-#Deck object that contains all 52 cards with different methods
 class CardList(ABC):
-    def __init__(self):
+    def __init__(self, cards=None):
         self._card_list = []
 
         self.rank_counts = Counter()
         self.suit_counts = Counter()
-    #printing backwards for better efficiency in pop()
+
+    def __iter__(self):
+        return iter(self._card_list)
+
     @abstractmethod
     def printCards(self):
         pass
@@ -60,6 +62,11 @@ class CardList(ABC):
 
     def get_suit_counts_list(self):
         return self.suit_counts
+
+    def add_card(self, card):
+        self._card_list.append(card)
+        self.rank_counts[card[0]] += 1
+        self.suit_counts[card[1]] += 1
 
 class Deck(CardList):
     _ranks = [x for x in Card.Values]
@@ -88,13 +95,31 @@ class Deck(CardList):
     def burn(self):
         self._card_list.pop()
 
+
+
 #Hand object that calculates best hand when combined with board
+@total_ordering
 class Hand(CardList):
-    def __init__(self, player, deck, board):
+    def __init__(self, player=None, deck=None, board=None, cards = None):
         super().__init__()
         self.player = player
         self.deck = deck
         self.board = board
+
+        if cards:
+            for card in cards:
+                self.add_card(card)
+            self._card_list = sorted(self._card_list, reverse=True)
+
+    def __gt__(self, other):
+        if not isinstance(other, Hand):
+            return NotImplemented
+        return self._card_list > other._card_list
+
+    def __eq__(self, other):
+        if not isinstance(other, Hand):
+            return NotImplemented
+        return self._card_list == other._card_list
 
     def printCards(self):
         print(f"==={self.player} HAND===")
@@ -107,10 +132,12 @@ class Hand(CardList):
         self._card_list.append(card)
 
         self.rank_counts[card[0]] += 1
-        self.suit_counts[card[0]] += 1
+        self.suit_counts[card[1]] += 1
 
     def all_cards(self):
-            return self.get_card_list() + self.board.get_card_list()
+            cards =  sorted(self.get_card_list() + self.board.get_card_list(),reverse=True)
+            return Hand(player=self.player, cards=cards)
+
 
 class Board(CardList):
     def __init__(self, deck):
@@ -131,7 +158,7 @@ class Board(CardList):
             self._card_list.append(card)
 
             self.rank_counts[card[0]] += 1
-            self.suit_counts[card[0]] += 1
+            self.suit_counts[card[1]] += 1
 
     def river_and_turn(self):
         self.deck.burn()
@@ -139,7 +166,7 @@ class Board(CardList):
         self._card_list.append(card)
 
         self.rank_counts[card[0]] += 1
-        self.suit_counts[card[0]] += 1
+        self.suit_counts[card[1]] += 1
 
 
 

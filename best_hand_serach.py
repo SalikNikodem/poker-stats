@@ -1,7 +1,5 @@
 import random
-
-from objects import Deck, Hand, Board
-from random import seed
+from objects import Deck, Hand, Board, Card
 
 random.seed(2)
 
@@ -10,26 +8,47 @@ poker_hands = ['High Card', 'Pair', 'Double Pair', 'Three of a kind', 'Straight'
 
 deck = Deck()
 board = Board(deck)
-hand = Hand("player", deck, board)
-
+hand1 = Hand("player1", deck, board)
+hand2 = Hand("player2", deck, board)
 deck.shuffleDeck()
-deck.printCards()
-hand.take_card()
-hand.take_card()
+hand1.take_card()
+hand1.take_card()
+hand2.take_card()
+hand2.take_card()
 board.flop()
 board.river_and_turn()
 board.river_and_turn()
-karty = hand.all_cards()
-print(karty)
-ranks = {}
-suits = {}
-values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-          '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+karty1 = hand1.all_cards()
+karty2 = hand2.all_cards()
 
-a = board.get_suit_counts_list()
-b = hand.get_suit_counts_list()
-list = a+b
-print(list)
-new_list = [list[x] for x in list if list[x] == 2]
-print(new_list)
-#SORTOWANIE PRZED ZWROCENIEM????????????????
+# _suits = ['♠', '♥', '♣', '♦']
+reka_ustawiona = Hand(cards=[
+Card("4", '♠'),
+Card("4", '♠'),
+Card("4", '♠'),
+Card("5", '♠'),
+Card("A", '♠')])
+reka_ustawiona.printCards()
+reka_ustawiona2 = Hand(cards=[
+Card("4", '♠'),
+Card("4", '♠'),
+Card("5", '♠'),
+Card("5", '♠'),
+Card("4", '♠')])
+reka_ustawiona2.printCards()
+
+
+
+def flush(hand):
+    colors = hand.get_suit_counts_list()
+    for suit, count in colors.items():
+        if count >=5:
+            flush_cards = [card for card in hand if card._suit == suit]
+            return Hand(player=None, cards=flush_cards)
+    return None
+
+x = flush(reka_ustawiona)
+x.printCards()
+
+print(reka_ustawiona < reka_ustawiona2)
+
