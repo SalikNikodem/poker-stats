@@ -111,6 +111,13 @@ class Hand(CardList):
                 self.add_card(card)
             self._card_list = sorted(self._card_list, reverse=True)
 
+    def __contains__(self, item):
+        if isinstance(item, str):
+            return any(card._rank == item for card in self._card_list)
+
+        return item in self._card_list
+
+
     def __gt__(self, other):
         if not isinstance(other, Hand):
             return NotImplemented
@@ -121,6 +128,8 @@ class Hand(CardList):
             return NotImplemented
         return self._card_list == other._card_list
 
+    def __getitem__(self, index):
+        return self._card_list[index]
     def printCards(self):
         print(f"==={self.player} HAND===")
         for card in self._card_list:
