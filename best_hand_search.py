@@ -1,4 +1,6 @@
 import random
+from time import process_time_ns
+
 from objects import Deck, Hand, Board, Card
 
 random.seed(2)
@@ -24,10 +26,10 @@ karty2 = hand2.all_cards()
 # _suits = ['♠', '♥', '♣', '♦']
 reka_ustawiona = Hand(cards=[
 Card("5", '♠'),
-Card("K", '♠'),
+Card("4", '♠'),
 Card("A", '♠'),
-Card("K", '♠'),
-Card("Q", '♠'),
+Card("3", '♠'),
+Card("2", '♠'),
 Card("Q", '♠'),
 Card("5", '♠')])
 reka_ustawiona2 = Hand(cards=[
@@ -128,5 +130,68 @@ def is_four_of_a_kind(hand):
         return Hand(player=hand.player, cards=final_cards)
     return None
 
-x = is_two_pair(reka_ustawiona)
-x.printCards()
+def is_full_house(hand):
+    ranks = hand.get_rank_counts_list()
+
+    sorted_ranks = sorted(ranks.keys(), key=lambda r : rank_values[r], reverse=True)
+
+    trip_rank = None
+    pair_rank = None
+
+    for rank in ranks:
+        if ranks[rank] >= 3:
+            trip_rank = rank
+            break
+
+    if trip_rank:
+        for rank in ranks:
+            if ranks[rank] >=2 and rank != trip_rank:
+                pair_rank = rank
+                break
+
+    if trip_rank and pair_rank:
+
+        t = [card for card in hand if card._rank == trip_rank][:3]
+        p = [card for card in hand if card._rank == pair_rank][:2]
+        return Hand(player=hand.player, cards=t + p)
+    return None
+def hand_unique(hand):
+    h = []
+    ranks = []
+    for card in hand:
+        if card._rank not in ranks:
+            ranks.append(card._rank)
+            h.append(card)
+
+    return Hand(cards=h,sort=False)
+def is_straight(hand):
+    rv = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
+    ranks = hand.get_rank_counts_list()
+
+    hand_u = hand_unique(hand)
+    # hand_u.append()
+
+    sorted_ranks = sorted(ranks.keys(), key=lambda r : rank_values[r], reverse=True)
+    if 'A' in sorted_ranks: sorted_ranks.append('A')
+    fives = [sorted_ranks[i:i+5] for i in range(len(sorted_ranks)-4)]
+    for five in fives:
+        if five[-1] == 'A':
+            rv['A'] = 1
+        sum = 0
+        for i in range(4):
+            sum += rv[five[i]] - rv[five[i+1]]
+        if sum == 4:
+            flag = (True if '5' in five and 'A' in five else False)
+            if flag:
+                print("ture")
+                hand_u.ace_in_low_straight()
+
+            cards = [card for card in hand_u if card._rank in five]
+            return Hand(player=hand.player, cards=cards, sort=False)
+    return None
+
+
+a = (is_straight(reka_ustawiona))
+a.printCards()
