@@ -3,6 +3,8 @@ import random
 from functools import total_ordering
 from abc import ABC, abstractmethod
 from collections import Counter
+from os import remove
+
 
 # Card object, total ordering used for sort() function mainly.
 @total_ordering
@@ -100,7 +102,7 @@ class Deck(CardList):
 #Hand object that calculates best hand when combined with board
 @total_ordering
 class Hand(CardList):
-    def __init__(self, player=None, deck=None, board=None, cards = None):
+    def __init__(self, player=None, deck=None, board=None, cards = None, sort=True):
         super().__init__()
         self.player = player
         self.deck = deck
@@ -109,7 +111,9 @@ class Hand(CardList):
         if cards:
             for card in cards:
                 self.add_card(card)
-            self._card_list = sorted(self._card_list, reverse=True)
+
+            if sort:
+                self._card_list = sorted(self._card_list, reverse=True)
 
     def __contains__(self, item):
         if isinstance(item, str):
@@ -146,6 +150,11 @@ class Hand(CardList):
     def all_cards(self):
             cards =  sorted(self.get_card_list() + self.board.get_card_list(),reverse=True)
             return Hand(player=self.player, cards=cards)
+
+    def ace_in_low_straight(self):
+        card = self._card_list[0]
+        self._card_list.append(card)
+        self._card_list = self._card_list[1:]
 
 
 class Board(CardList):
