@@ -1,44 +1,5 @@
 from objects import Deck, Hand, Board, Card
 
-poker_hands = ['High Card', 'Pair', 'Double Pair', 'Three of a kind', 'Straight', 'Flush', 'Full House',
-               'Four of a kind', 'Straight Flush', 'Royal Flush']
-
-deck = Deck()
-board = Board(deck)
-hand1 = Hand("player1", deck, board)
-hand2 = Hand("player2", deck, board)
-deck.shuffleDeck()
-hand1.take_card()
-hand1.take_card()
-hand2.take_card()
-hand2.take_card()
-board.flop()
-board.river_and_turn()
-board.river_and_turn()
-karty1 = hand1.all_cards()
-karty2 = hand2.all_cards()
-
-# _suits = ['♠', '♥', '♣', '♦']
-reka_ustawiona = Hand(cards=[
-Card("5", '♠'),
-Card("4", '♠'),
-Card("A", '♠'),
-Card("10", '♠'),
-Card("J", '♠'),
-Card("Q", '♠'),
-Card("K", '♠')])
-reka_ustawiona2 = Hand(cards=[
-Card("Q", '♠'),
-Card("5", '♠'),
-Card("4", '♠'),
-Card("3", '♠'),
-Card("2", '♠'),
-Card("6", '♠'),
-Card("10", '♠')])
-
-rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-               '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
 def is_flush(hand):
     colors = hand.get_suit_counts_list()
     for suit, count in colors.items():
@@ -48,6 +9,9 @@ def is_flush(hand):
     return None
 
 def is_pair(hand):
+    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
     ranks = hand.get_rank_counts_list()
     sorted_ranks = sorted(ranks.keys(), key=lambda r: rank_values[r], reverse=True)
 
@@ -63,10 +27,12 @@ def is_pair(hand):
 
         final_cards = cards + rest[:3]
 
-        return Hand(player=hand.player,cards=final_cards)
-
+        return Hand(player=hand.player,cards=final_cards, sort=False)
 
 def is_two_pair(hand):
+    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
     ranks = hand.get_rank_counts_list()
     pairs = []
 
@@ -86,10 +52,13 @@ def is_two_pair(hand):
 
         final_cards = cards1 + cards2 + rest[:1]
 
-        return Hand(player=hand.player, cards=final_cards)
+        return Hand(player=hand.player, cards=final_cards, sort=False)
     return None
 
 def is_three_of_a_kind(hand):
+    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
     ranks = hand.get_rank_counts_list()
     rank = None
     sorted_ranks = sorted(ranks.keys(), key=lambda r: rank_values[r], reverse=True)
@@ -105,7 +74,7 @@ def is_three_of_a_kind(hand):
 
         final_cards = cards + rest[:2]
 
-        return Hand(player=hand.player, cards=final_cards)
+        return Hand(player=hand.player, cards=final_cards, sort=False)
     return None
 
 def is_four_of_a_kind(hand):
@@ -121,10 +90,13 @@ def is_four_of_a_kind(hand):
 
         final_cards = cards + rest[:1]
 
-        return Hand(player=hand.player, cards=final_cards)
+        return Hand(player=hand.player, cards=final_cards, sort=False)
     return None
 
 def is_full_house(hand):
+    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
     ranks = hand.get_rank_counts_list()
 
     sorted_ranks = sorted(ranks.keys(), key=lambda r : rank_values[r], reverse=True)
@@ -147,8 +119,9 @@ def is_full_house(hand):
 
         t = [card for card in hand if card._rank == trip_rank][:3]
         p = [card for card in hand if card._rank == pair_rank][:2]
-        return Hand(player=hand.player, cards=t + p)
+        return Hand(player=hand.player, cards=t + p, sort=False)
     return None
+
 def hand_unique(hand):
     h = []
     ranks = []
@@ -158,8 +131,9 @@ def hand_unique(hand):
             h.append(card)
 
     return Hand(cards=h,sort=False)
+
 def is_straight(hand):
-    rv = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
                    '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
     ranks = hand.get_rank_counts_list()
@@ -171,10 +145,10 @@ def is_straight(hand):
     fives = [sorted_ranks[i:i+5] for i in range(len(sorted_ranks)-4)]
     for five in fives:
         if five[-1] == 'A':
-            rv['A'] = 1
+            rank_values['A'] = 1
         sum = 0
         for i in range(4):
-            sum += rv[five[i]] - rv[five[i+1]]
+            sum += rank_values[five[i]] - rank_values[five[i+1]]
         if sum == 4:
             flag = (True if '5' in five and 'A' in five else False)
             if flag:
@@ -183,14 +157,20 @@ def is_straight(hand):
             return Hand(player=hand.player, cards=cards, sort=False)
     return None
 
-
 def is_straight_flush(hand):
-    flush = is_flush(hand)
-    if flush:
-        straight = is_straight(flush)
-        if straight:
-            return straight
-    return None
+    suit_counts = hand.get_suit_counts_list()
+    flush_suit = None
+    for suit, count in suit_counts.items():
+        if count >= 5:
+            flush_suit = suit
+            break
+    if not flush_suit:
+        return None
+
+    flush_cards = [card for card in hand if card._suit == flush_suit]
+    all_flush_cards_hand = Hand(cards=flush_cards)
+
+    return is_straight(all_flush_cards_hand)
 
 def is_royal_flush(hand):
     straight_flush = is_straight_flush(hand)
@@ -203,3 +183,56 @@ def is_royal_flush(hand):
 def is_high_card(hand):
     return Hand(player=hand.player, cards=hand[:5])
 
+def evaluate_hand(hand):
+    hand_values = [
+        (10, is_royal_flush),
+        (9, is_straight_flush),
+        (8, is_four_of_a_kind),
+        (7, is_full_house),
+        (6, is_flush),
+        (5, is_straight),
+        (4, is_three_of_a_kind),
+        (3, is_two_pair),
+        (2, is_pair),
+    ]
+
+    for value, func in hand_values:
+        result = func(hand)
+        if result:
+            return result, value
+
+    return is_high_card(hand), 1
+
+def better_hand(hand1, hand2):
+    result1, value1 = evaluate_hand(hand1)
+    result2, value2 = evaluate_hand(hand2)
+
+    if value1 > value2: return result1, value1
+    elif value1 < value2: return result2, value2
+    else:
+        if result1 > result2:
+            return result1, value1
+        elif result2 > result1:
+            return result2, value2
+        else:
+            return None, None
+
+# _suits = ['♠', '♥', '♣', '♦']
+reka_ustawiona = Hand(cards=[
+Card("7", '♣'),
+Card("4", '♣'),
+Card("5", '♣'),
+Card("4", '♣'),
+Card("3", '♣'),
+Card("2", '♣'),
+Card("A", '♣')
+    ])
+reka_ustawiona2 = Hand(cards=[
+Card("6", '♥'),
+Card("A", '♥'),
+Card("6", '♥'),
+Card("5", '♥'),
+Card("4", '♥'),
+Card("3", '♥'),
+Card("2", '♥')
+    ])
