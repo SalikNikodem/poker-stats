@@ -199,40 +199,58 @@ def evaluate_hand(hand):
     for value, func in hand_values:
         result = func(hand)
         if result:
-            return result, value
+            return result, value, str(hand_values[value])
 
     return is_high_card(hand), 1
 
 def better_hand(hand1, hand2):
-    result1, value1 = evaluate_hand(hand1)
-    result2, value2 = evaluate_hand(hand2)
+    result1, value1, hand1 = evaluate_hand(hand1)
+    result2, value2, hand2 = evaluate_hand(hand2)
 
-    if value1 > value2: return result1, value1
-    elif value1 < value2: return result2, value2
+    if value1 > value2: return result1, value1, hand1
+    elif value1 < value2: return result2, value2, hand2
     else:
         if result1 > result2:
-            return result1, value1
+            return result1, value1, hand1
         elif result2 > result1:
-            return result2, value2
+            return result2, value2, hand2
         else:
-            return None, None
+            return None, None, None
 
-# _suits = ['♠', '♥', '♣', '♦']
-reka_ustawiona = Hand(cards=[
-Card("7", '♣'),
-Card("4", '♣'),
-Card("5", '♣'),
-Card("4", '♣'),
-Card("3", '♣'),
-Card("2", '♣'),
-Card("A", '♣')
-    ])
-reka_ustawiona2 = Hand(cards=[
-Card("6", '♥'),
-Card("A", '♥'),
-Card("6", '♥'),
-Card("5", '♥'),
-Card("4", '♥'),
-Card("3", '♥'),
-Card("2", '♥')
-    ])
+def game(num_of_players):
+    hands = []
+
+    deck = Deck()
+    board = Board(deck=deck)
+
+    for i in range(num_of_players):
+        hands.append(Hand(player=f'PLAYER{i+1}', deck=deck, board=board))
+
+    deck.shuffleDeck()
+
+    for i in range(2):
+        for hand in hands:
+            hand.take_card()
+
+    for hand in hands:
+        hand.printCards()
+
+    board.flop()
+    board.river_and_turn()
+    board.river_and_turn()
+
+    board.printCards()
+
+    all_hands = []
+
+    for hand in hands:
+        all_hand = hand.all_cards()
+        all_hands.append(all_hand)
+
+    #nned to figure it out and also figure out ties
+    # for i in range(len(all_hands) - 1):
+    #     result, value, hand = better_hand(all_hands[i], all_hands[i+1])
+    #
+
+
+game(4)

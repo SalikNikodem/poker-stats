@@ -3,7 +3,6 @@ import random
 from functools import total_ordering
 from abc import ABC, abstractmethod
 from collections import Counter
-from os import remove
 
 
 # Card object, total ordering used for sort() function mainly.
