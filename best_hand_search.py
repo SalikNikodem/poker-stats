@@ -185,37 +185,23 @@ def is_high_card(hand):
 
 def evaluate_hand(hand):
     hand_values = [
-        (10, is_royal_flush),
-        (9, is_straight_flush),
-        (8, is_four_of_a_kind),
-        (7, is_full_house),
-        (6, is_flush),
-        (5, is_straight),
-        (4, is_three_of_a_kind),
-        (3, is_two_pair),
-        (2, is_pair),
+        (10, is_royal_flush, "Royal Flush"),
+        (9, is_straight_flush, "Straight Flush"),
+        (8, is_four_of_a_kind, "Four of a Kind"),
+        (7, is_full_house, "Full House"),
+        (6, is_flush, "Flush"),
+        (5, is_straight, "Straight"),
+        (4, is_three_of_a_kind, "Three of a Kind"),
+        (3, is_two_pair, "Two Pair"),
+        (2, is_pair, "Pair")
     ]
-
-    for value, func in hand_values:
+    for value, func, name in hand_values:
         result = func(hand)
         if result:
-            return result, value, str(hand_values[value])
+            return result, value, name
 
-    return is_high_card(hand), 1
+    return is_high_card(hand), 1, 'High Card'
 
-def better_hand(hand1, hand2):
-    result1, value1, hand1 = evaluate_hand(hand1)
-    result2, value2, hand2 = evaluate_hand(hand2)
-
-    if value1 > value2: return result1, value1, hand1
-    elif value1 < value2: return result2, value2, hand2
-    else:
-        if result1 > result2:
-            return result1, value1, hand1
-        elif result2 > result1:
-            return result2, value2, hand2
-        else:
-            return None, None, None
 
 def game(num_of_players):
     hands = []
@@ -245,12 +231,51 @@ def game(num_of_players):
 
     for hand in hands:
         all_hand = hand.all_cards()
-        all_hands.append(all_hand)
 
-    #nned to figure it out and also figure out ties
-    # for i in range(len(all_hands) - 1):
-    #     result, value, hand = better_hand(all_hands[i], all_hands[i+1])
-    #
+        result, value, hand_name = evaluate_hand(all_hand)
+
+        all_hands.append({
+            'player': hand.player,
+            'power': value,
+            'best_5': result,
+            'name': hand_name
+        })
+
+    for h in all_hands: print(h['best_5'])
+
+    max_power = max(s['power'] for s in all_hands)
+
+    contenders = [s for s in all_hands if s['power'] == max_power]
+
+    winners = []
+
+    if len(contenders) == 1:
+        winners.append(contenders[0])
+    else:
+        current_best = contenders[0]
+        winners = [current_best]
+
+        for i in range(1,len(contenders)):
+            challenger = contenders[i]
+
+            if challenger['best_5'] > current_best['best_5']:
+                current_best = challenger
+                winners = [challenger]
+            elif challenger['best_5'] == current_best['best_5']:
+                winners.append(challenger)
+
+    if len(winners) > 1:
+        print(f"--- SPLIT ({len(winners)} players) ---")
+
+    else:
+        print(f"--- WINNER: {winners[0]['player']} ---")
+
+    print("WINNER OR WINNERS")
+    for w in winners:
+        print(w['best_5'])
+        print(w['name'])
+
+
 
 
 game(4)

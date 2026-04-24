@@ -131,6 +131,15 @@ class Hand(CardList):
             return NotImplemented
         return self._card_list == other._card_list
 
+    def __str__(self):
+        result = f"==={self.player} HAND===\n"
+
+        cards_line = ""
+        for card in self._card_list:
+            cards_line += f"{str(card):<7}"
+
+        return result + cards_line
+
     def __getitem__(self, index):
         return self._card_list[index]
     def printCards(self):
