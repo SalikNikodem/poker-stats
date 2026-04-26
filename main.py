@@ -1,26 +1,12 @@
-from objects import Deck, Hand, Board
-
+from best_hand_search import HandManager, game
 if __name__ == '__main__':
-    deck = Deck()
-    deck.shuffleDeck()
-    deck.printCards()
+    num = int(input("How many games you want to play?: "))
+    players = int(input("How many players?: "))
+    hand_stats = HandManager()
 
-    board = Board(deck)
-    board.flop()
-    board.printCards()
-    deck.printCards()
-    board.river_and_turn()
-    board.river_and_turn()
-    deck.printCards()
-    board.printCards()
+    for _ in range(num):
+        all_hands, winners = game(players)
 
-    hand1 = Hand("player1", deck, board)
+        hand_stats.update_stats(all_hands, winners)
 
-    hand1.take_card()
-    hand1.take_card()
-    hand1.printCards()
-    deck.printCards()
-    print(hand1.get_card_list())
-    print(board.get_card_list())
-    lista = hand1.get_card_list() + board.get_card_list()
-    print(lista)
+    hand_stats.save_to_json()

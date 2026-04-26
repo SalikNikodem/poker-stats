@@ -301,11 +301,3 @@ class HandManager:
             json.dump(self.stats, ff, indent=4, ensure_ascii=False)
 
 
-hand_stats = HandManager()
-
-for _ in range(100000):
-    all_hands, winners = game(4)
-
-    hand_stats.update_stats(all_hands, winners)
-
-hand_stats.save_to_json()
