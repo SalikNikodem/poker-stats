@@ -1,4 +1,5 @@
-from best_hand_search import HandManager, game
+from helpers_and_functions import game
+from models import  HandManager
 if __name__ == '__main__':
     num = int(input("How many games you want to play?: "))
     players = int(input("How many players?: "))

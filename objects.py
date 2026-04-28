@@ -4,8 +4,6 @@ from functools import total_ordering
 from abc import ABC, abstractmethod
 from collections import Counter
 
-
-# Card object, total ordering used for sort() function mainly.
 @total_ordering
 class Card:
     Values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
@@ -92,13 +90,10 @@ class Deck(CardList):
     def take_card(self):
         return self._card_list.pop()
 
-    #burn method to simulate real game as best as possible
     def burn(self):
         self._card_list.pop()
 
 
-
-#Hand object that calculates best hand when combined with board
 @total_ordering
 class Hand(CardList):
     def __init__(self, player=None, deck=None, board=None, cards = None, sort=True):
@@ -176,7 +171,6 @@ class Board(CardList):
             print(f"{str(card):<7}", end='')
         print()
 
-#flop river_turn
     def flop(self):
         self.deck.burn()
         for i in range(3):
@@ -193,7 +187,3 @@ class Board(CardList):
 
         self.rank_counts[card[0]] += 1
         self.suit_counts[card[1]] += 1
-
-
-
-
