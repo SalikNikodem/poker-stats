@@ -49,6 +49,7 @@ def game(num_of_players):
             'player': hand.player,
             'power': value,
             'best_5': result,
+            'starting_hand': hand,
             'name': hand_name
         })
 
@@ -74,4 +75,12 @@ def game(num_of_players):
             elif challenger['best_5'] == current_best['best_5']:
                 winners.append(challenger)
 
-    return all_hands, winners
+    winning_starting_hands = [w['starting_hand'] for w in winners]
+
+    for hand in hands:
+        hand.printCards()
+
+    for hand in winning_starting_hands:
+        hand.printCards()
+
+    return all_hands, winners, hands, winning_starting_hands

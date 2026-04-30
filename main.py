@@ -6,7 +6,7 @@ if __name__ == '__main__':
     hand_stats = HandManager()
 
     for _ in range(num):
-        all_hands, winners = game(players)
+        all_hands, winners, hands, winning_starting_hands = game(players)
 
         hand_stats.update_stats(all_hands, winners)
 
