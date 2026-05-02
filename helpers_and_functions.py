@@ -77,10 +77,5 @@ def game(num_of_players):
 
     winning_starting_hands = [w['starting_hand'] for w in winners]
 
-    for hand in hands:
-        hand.printCards()
-
-    for hand in winning_starting_hands:
-        hand.printCards()
 
     return all_hands, winners, hands, winning_starting_hands

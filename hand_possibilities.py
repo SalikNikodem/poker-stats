@@ -1,4 +1,4 @@
-from objects import Hand
+from objects import Hand, Card
 
 def is_flush(hand):
     colors = hand.get_suit_counts_list()
@@ -9,11 +9,8 @@ def is_flush(hand):
     return None
 
 def is_pair(hand):
-    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
     ranks = hand.get_rank_counts_list()
-    sorted_ranks = sorted(ranks.keys(), key=lambda r: rank_values[r], reverse=True)
+    sorted_ranks = sorted(ranks.keys(), key=lambda r: Card.Values[r], reverse=True)
 
     rank = None
     for k in sorted_ranks:
@@ -30,9 +27,6 @@ def is_pair(hand):
         return Hand(player=hand.player,cards=final_cards, sort=False)
 
 def is_two_pair(hand):
-    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
     ranks = hand.get_rank_counts_list()
     pairs = []
 
@@ -41,7 +35,7 @@ def is_two_pair(hand):
             pairs.append(k)
 
     if len(pairs) >= 2:
-        pairs = sorted(pairs, key=lambda r: rank_values[r], reverse=True)[:2]
+        pairs = sorted(pairs, key=lambda r: Card.Values[r], reverse=True)[:2]
 
         rank1, rank2 = pairs[0], pairs[1]
 
@@ -94,12 +88,9 @@ def is_four_of_a_kind(hand):
     return None
 
 def is_full_house(hand):
-    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
     ranks = hand.get_rank_counts_list()
 
-    sorted_ranks = sorted(ranks.keys(), key=lambda r : rank_values[r], reverse=True)
+    sorted_ranks = sorted(ranks.keys(), key=lambda r : Card.Values[r], reverse=True)
 
     trip_rank = None
     pair_rank = None
@@ -133,22 +124,19 @@ def hand_unique(hand):
     return Hand(cards=h,sort=False)
 
 def is_straight(hand):
-    rank_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-                   '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
     ranks = hand.get_rank_counts_list()
 
     hand_u = hand_unique(hand)
 
-    sorted_ranks = sorted(ranks.keys(), key=lambda r : rank_values[r], reverse=True)
+    sorted_ranks = sorted(ranks.keys(), key=lambda r : Card.Values[r], reverse=True)
     if 'A' in sorted_ranks: sorted_ranks.append('A')
     fives = [sorted_ranks[i:i+5] for i in range(len(sorted_ranks)-4)]
     for five in fives:
         if five[-1] == 'A':
-            rank_values['A'] = 1
+            Card.Values['A'] = 1
         sum = 0
         for i in range(4):
-            sum += rank_values[five[i]] - rank_values[five[i+1]]
+            sum += Card.Values[five[i]] - Card.Values[five[i+1]]
         if sum == 4:
             flag = (True if '5' in five and 'A' in five else False)
             if flag:
@@ -176,7 +164,7 @@ def is_royal_flush(hand):
     straight_flush = is_straight_flush(hand)
 
     if straight_flush:
-        if 'A' and '10' in straight_flush:
+        if 'A' in straight_flush and '10' in straight_flush:
             return straight_flush
     return None
 
