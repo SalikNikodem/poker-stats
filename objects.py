@@ -93,6 +93,11 @@ class Deck(CardList):
     def burn(self):
         self._card_list.pop()
 
+    @classmethod
+    def create_deck(cls):
+        deck = cls()
+        deck.shuffleDeck()
+        return deck
 
 @total_ordering
 class Hand(CardList):
@@ -159,6 +164,16 @@ class Hand(CardList):
         self._card_list.append(card)
         self._card_list = self._card_list[1:]
 
+    @classmethod
+    def deal_hands(cls, num_of_players, deck, board):
+        hands = [cls(player=f'PLAYER{i+1}', deck=deck, board=board) for i in range(num_of_players)]
+
+        for _ in range(2):
+            for hand in hands:
+                hand.take_card()
+
+        return hands
+
 
 class Board(CardList):
     def __init__(self, deck):
@@ -187,3 +202,8 @@ class Board(CardList):
 
         self.rank_counts[card[0]] += 1
         self.suit_counts[card[1]] += 1
+
+    def deal_cards(self):
+        self.flop()
+        self.river_and_turn()
+        self.river_and_turn()

@@ -21,22 +21,10 @@ def evaluate_hand(hand):
     return is_high_card(hand), 1, 'High Card'
 
 def game(num_of_players):
-    hands = []
-
-    deck = Deck()
+    deck = Deck.create_deck()
     board = Board(deck=deck)
-
-    for i in range(num_of_players):
-        hands.append(Hand(player=f'PLAYER{i+1}', deck=deck, board=board))
-
-    deck.shuffleDeck()
-
-    for i in range(2):
-        for hand in hands:
-            hand.take_card()
-    board.flop()
-    board.river_and_turn()
-    board.river_and_turn()
+    hands = Hand.deal_hands(num_of_players, deck, board)
+    board.deal_cards()
 
     all_hands = []
 
@@ -76,6 +64,5 @@ def game(num_of_players):
                 winners.append(challenger)
 
     winning_starting_hands = [w['starting_hand'] for w in winners]
-
 
     return all_hands, winners, hands, winning_starting_hands
