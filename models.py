@@ -35,6 +35,11 @@ class HandManager:
             if num_winners > 1:
                 self.stats[name]["splits"] += 1
 
+        for name in self.stats:
+            occ = self.stats[name]["occurrences"]
+            wins = self.stats[name]["wins"]
+            self.stats[name]["win_rate"] = f"{(wins / occ * 100):.2f}%" if occ > 0 else "0%"
+
     def save_to_json(self):
         with open(self.file_path, 'w', encoding='utf-8') as ff:
             json.dump(self.stats, ff, indent=4, ensure_ascii=False)

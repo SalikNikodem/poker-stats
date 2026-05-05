@@ -1,5 +1,9 @@
 from helpers_and_functions import game
 from models import  HandManager
+
+MIN_PLAYERS = 2
+MAX_PLAYERS = 10
+
 if __name__ == '__main__':
     try:
         num_input = input("How many games you want to play?: ")
@@ -8,8 +12,8 @@ if __name__ == '__main__':
         num = int(num_input)
         players = int(players_input)
 
-        if players < 2: raise ValueError("Error: Please provide more than one player.")
-        elif players > 10: raise ValueError(f"Error: Please provide less than {players} players.")
+        if players < MIN_PLAYERS: raise ValueError(f"Error: Please provide value bigger than {players}.")
+        elif players > MAX_PLAYERS: raise ValueError(f"Error: Please provide less than {players} players.")
 
         hand_stats = HandManager()
         for _ in range(num):
