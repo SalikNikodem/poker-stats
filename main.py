@@ -16,10 +16,16 @@ if __name__ == '__main__':
         elif players > MAX_PLAYERS: raise ValueError(f"Error: Please provide less than {players} players.")
 
         hand_stats = HandManager()
-        for _ in range(num):
+
+        step = max(1, num // 100)
+        for i in range(num):
+
             all_hands, winners, hands, winning_starting_hands = game(players)
 
             hand_stats.update_stats(all_hands, winners)
+
+            if (i + 1) % step == 0:
+                print(f"IN PROGRESS: {(i + 1) // step}%")
 
         hand_stats.save_to_json()
     except ValueError as e:
@@ -29,3 +35,6 @@ if __name__ == '__main__':
             print(f"Error : {e}")
     except Exception as e:
         print(f"Unexpected error occurred: {e}.")
+
+
+#sprawdzic czy da sie gdzie zmeirzyc ile co sie robi
