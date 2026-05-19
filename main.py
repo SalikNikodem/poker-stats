@@ -25,7 +25,11 @@ if __name__ == '__main__':
             hand_stats.update_stats(all_hands, winners)
 
             if (i + 1) % step == 0:
-                print(f"IN PROGRESS: {(i + 1) // step}%")
+                current_percent = (i + 1) // step
+                bars = current_percent // 10
+                spaces = 10 - bars
+
+                print(f"IN PROGRESS {'|' * bars}{' ' * spaces} {current_percent}%")
 
         hand_stats.save_to_json()
     except ValueError as e:
