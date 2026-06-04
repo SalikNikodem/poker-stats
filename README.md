@@ -16,6 +16,9 @@ Example of json:
         "occurrences": 20058,
 		...
   
+While program is running, there is a progress bar that allows user to see current percent of games played.
+It is helpful to calculate amount of time needed and operations done in time.
+
 
 Installation
 
