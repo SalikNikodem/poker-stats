@@ -24,3 +24,9 @@ Installation
 
 git clone https://github.com/SalikNikodem/poker-stats.git
 
+Project Structure:
+-'main.py' - main program, use it in terminal
+-'objects.py' - all Card, Deck, Hand, Board classes for use
+-'hand_possibillities.py' - all poker hand possibillities using Card and Hand classes
+-'helpers_and_functions.py' - functions used for for 'main.py' and evaluating hands
+-'models.py' - HandManager model used for file tracking
