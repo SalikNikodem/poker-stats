@@ -30,3 +30,14 @@ Project Structure:
 -'hand_possibillities.py' - all poker hand possibillities using Card and Hand classes
 -'helpers_and_functions.py' - functions used for for 'main.py' and evaluating hands
 -'models.py' - HandManager model used for file tracking
+
+Terminal preview
+
+How many games you want to play?: 1000
+How many players?: 4
+Starting simulation...
+IN PROGRESS [||        ] 20%
+IN PROGRESS [|||||     ] 50%
+IN PROGRESS [||||||||||] 100%
+Simulation finished successfully! Stats saved.
+
