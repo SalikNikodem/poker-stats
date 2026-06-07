@@ -3,6 +3,14 @@ Python program that calculates % for specific poker hand
 
 Python program that uses calculation functions and objects to simulate real poker game for any number of players.
 
+Features
+
+-Full implementation of Texas Hold'em rules and hand rankings.
+-Precise kicker evaluation to properly handle split pots.
+-Automatically creates, loads, and updates a local JSON database so your simulation data accumulates over multiple runs.
+-A text-based, optimized progress bar in the terminal to track long-running simulations.
+-Built entirely using Python's standard library (`collections`, `itertools`, `pathlib`)
+
 As of right now, program allows to simulate poker game any amount of times and saves results in json file.
 
 Example of json:
@@ -16,9 +24,6 @@ Example of json:
         "occurrences": 20058,
 		...
   
-While program is running, there is a progress bar that allows user to see current percent of games played.
-It is helpful to calculate amount of time needed and operations done in time.
-
 
 Installation
 
